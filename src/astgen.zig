@@ -2307,34 +2307,35 @@ fn unreach(mod: *Module, scope: *Scope, unreach_node: *ast.Node.OneToken) InnerE
     return addZIRNoOp(mod, scope, src, .@"unreachable");
 }
 
+pub const simple_types = std.ComptimeStringMap(Value.Tag, .{
+    .{ "u8", .u8_type },
+    .{ "i8", .i8_type },
+    .{ "isize", .isize_type },
+    .{ "usize", .usize_type },
+    .{ "c_short", .c_short_type },
+    .{ "c_ushort", .c_ushort_type },
+    .{ "c_int", .c_int_type },
+    .{ "c_uint", .c_uint_type },
+    .{ "c_long", .c_long_type },
+    .{ "c_ulong", .c_ulong_type },
+    .{ "c_longlong", .c_longlong_type },
+    .{ "c_ulonglong", .c_ulonglong_type },
+    .{ "c_longdouble", .c_longdouble_type },
+    .{ "f16", .f16_type },
+    .{ "f32", .f32_type },
+    .{ "f64", .f64_type },
+    .{ "f128", .f128_type },
+    .{ "c_void", .c_void_type },
+    .{ "bool", .bool_type },
+    .{ "void", .void_type },
+    .{ "type", .type_type },
+    .{ "anyerror", .anyerror_type },
+    .{ "comptime_int", .comptime_int_type },
+    .{ "comptime_float", .comptime_float_type },
+    .{ "noreturn", .noreturn_type },
+});
+
 fn getSimplePrimitiveValue(name: []const u8) ?TypedValue {
-    const simple_types = std.ComptimeStringMap(Value.Tag, .{
-        .{ "u8", .u8_type },
-        .{ "i8", .i8_type },
-        .{ "isize", .isize_type },
-        .{ "usize", .usize_type },
-        .{ "c_short", .c_short_type },
-        .{ "c_ushort", .c_ushort_type },
-        .{ "c_int", .c_int_type },
-        .{ "c_uint", .c_uint_type },
-        .{ "c_long", .c_long_type },
-        .{ "c_ulong", .c_ulong_type },
-        .{ "c_longlong", .c_longlong_type },
-        .{ "c_ulonglong", .c_ulonglong_type },
-        .{ "c_longdouble", .c_longdouble_type },
-        .{ "f16", .f16_type },
-        .{ "f32", .f32_type },
-        .{ "f64", .f64_type },
-        .{ "f128", .f128_type },
-        .{ "c_void", .c_void_type },
-        .{ "bool", .bool_type },
-        .{ "void", .void_type },
-        .{ "type", .type_type },
-        .{ "anyerror", .anyerror_type },
-        .{ "comptime_int", .comptime_int_type },
-        .{ "comptime_float", .comptime_float_type },
-        .{ "noreturn", .noreturn_type },
-    });
     if (simple_types.get(name)) |tag| {
         return TypedValue{
             .ty = Type.initTag(.type),

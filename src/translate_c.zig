@@ -5240,9 +5240,10 @@ fn appendTokenFmt(c: *Context, token_id: Token.Id, comptime format: []const u8, 
     return c.token_ids.items.len - 1;
 }
 
-// TODO hook up with codegen
 fn isZigPrimitiveType(name: []const u8) bool {
-    if (name.len > 1 and (name[0] == 'u' or name[0] == 'i')) {
+    if (@import("astgen.zig").simple_types.get(name) != null) {
+        return true;
+    } else if (name.len > 1 and (name[0] == 'u' or name[0] == 'i')) {
         for (name[1..]) |c| {
             switch (c) {
                 '0'...'9' => {},
@@ -5251,28 +5252,7 @@ fn isZigPrimitiveType(name: []const u8) bool {
         }
         return true;
     }
-    // void is invalid in c so it doesn't need to be checked.
-    return mem.eql(u8, name, "comptime_float") or
-        mem.eql(u8, name, "comptime_int") or
-        mem.eql(u8, name, "bool") or
-        mem.eql(u8, name, "isize") or
-        mem.eql(u8, name, "usize") or
-        mem.eql(u8, name, "f16") or
-        mem.eql(u8, name, "f32") or
-        mem.eql(u8, name, "f64") or
-        mem.eql(u8, name, "f128") or
-        mem.eql(u8, name, "c_longdouble") or
-        mem.eql(u8, name, "noreturn") or
-        mem.eql(u8, name, "type") or
-        mem.eql(u8, name, "anyerror") or
-        mem.eql(u8, name, "c_short") or
-        mem.eql(u8, name, "c_ushort") or
-        mem.eql(u8, name, "c_int") or
-        mem.eql(u8, name, "c_uint") or
-        mem.eql(u8, name, "c_long") or
-        mem.eql(u8, name, "c_ulong") or
-        mem.eql(u8, name, "c_longlong") or
-        mem.eql(u8, name, "c_ulonglong");
+    return false;
 }
 
 fn appendIdentifier(c: *Context, name: []const u8) !ast.TokenIndex {
