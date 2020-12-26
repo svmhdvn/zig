@@ -17,7 +17,7 @@ const Allocator = std.mem.Allocator;
 /// it always to catch a deadlock.
 var all_cache_digest_set: std.AutoHashMapUnmanaged(BinDigest, void) = .{};
 var all_cache_digest_lock: std.Mutex = .{};
-const want_debug_deadlock = true; // TODO change this for release builds
+const want_debug_deadlock = std.debug.runtime_safety;
 const DebugBinDigest = if (want_debug_deadlock) BinDigest else void;
 const null_debug_bin_digest = if (want_debug_deadlock) ([1]u8{0} ** bin_digest_len) else {};
 
